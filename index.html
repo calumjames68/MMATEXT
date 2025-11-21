@@ -34,6 +34,7 @@
         <div class="absolute bottom-4 text-neutral-700 text-xs">v2.0.0 - Modular Architecture</div>
     </div>
 
+    <!-- CREATE CHARACTER SCREEN -->
     <div id="create-char-screen" class="hidden h-screen w-full absolute z-50 bg-neutral-900 flex flex-col items-center justify-center p-8">
         <h2 class="text-2xl font-bold text-white mb-6">CREATE FIGHTER</h2>
         <div class="flex gap-4 mb-8">
@@ -50,11 +51,13 @@
         </div>
     </div>
 
+    <!-- FIGHT OFFER SCREEN -->
     <div id="fight-offer-screen" class="hidden h-screen w-full absolute z-40 bg-neutral-900 flex flex-col p-8">
         <h2 class="text-2xl font-bold text-white mb-6">SELECT OPPONENT</h2>
         <div id="offer-container" class="grid grid-cols-1 gap-4 max-w-md mx-auto w-full"></div>
     </div>
 
+    <!-- CAMP SCREEN -->
     <div id="camp-screen" class="hidden h-screen w-full absolute z-40 bg-neutral-900 flex flex-col p-6 overflow-y-auto">
         <header class="flex justify-between items-end mb-6 border-b border-neutral-800 pb-4">
             <div>
@@ -101,6 +104,7 @@
         <button id="btn-finish-camp" onclick="game.goToGamePlan()" class="mt-auto w-full max-w-md mx-auto bg-green-600 hover:bg-green-700 text-white font-bold py-4 rounded">FINISH CAMP</button>
     </div>
 
+    <!-- GAME PLAN SCREEN -->
     <div id="game-plan-screen" class="hidden h-screen w-full absolute z-50 bg-neutral-900 flex flex-col items-center justify-center p-8">
         <h2 class="text-2xl font-bold text-white mb-8">GAME PLAN</h2>
         <div class="w-full max-w-md space-y-6">
@@ -124,7 +128,7 @@
         </div>
     </div>
 
-    <!-- CAREER SCREENS -->
+    <!-- CAREER UI -->
     <div id="career-ui" class="hidden h-full w-full absolute z-40 bg-neutral-900 flex flex-col p-8 overflow-y-auto">
         <header class="mb-8 border-b border-neutral-800 pb-4 flex justify-between items-center">
             <h2 class="text-2xl font-bold text-white" id="career-title">CAREER HUB</h2>
@@ -188,10 +192,16 @@
                 </div>
                 <div id="p1-status-badges" class="flex gap-2 mb-2 min-h-[20px]"></div>
 
-                <!-- Controls -->
-                <div id="fight-controls-container">
-                     <!-- Injected by Fight.js -->
+                <!-- Category Tabs (ADDED THIS) -->
+                <div class="flex gap-1 mb-2">
+                    <button id="tab-strike" onclick="game.setCategory('strike')" class="flex-1 text-[10px] bg-neutral-800 border border-neutral-700 text-neutral-400 py-1 rounded hover:text-white hover:border-white border-white text-white">STRIKE</button>
+                    <button id="tab-grapple" onclick="game.setCategory('grapple')" class="flex-1 text-[10px] bg-neutral-800 border border-neutral-700 text-neutral-400 py-1 rounded hover:text-white hover:border-white">GRAPPLE</button>
+                    <button id="tab-sub" onclick="game.setCategory('sub')" class="flex-1 text-[10px] bg-neutral-800 border border-neutral-700 text-neutral-400 py-1 rounded hover:text-white hover:border-white">SUB</button>
+                    <button id="tab-move" onclick="game.setCategory('move')" class="flex-1 text-[10px] bg-neutral-800 border border-neutral-700 text-neutral-400 py-1 rounded hover:text-white hover:border-white">MOVE</button>
                 </div>
+
+                <!-- Controls Container (RENAMED ID TO 'controls' TO MATCH JS) -->
+                <div id="controls"></div>
             </div>
 
             <!-- Log -->
