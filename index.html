@@ -34,6 +34,96 @@
         <div class="absolute bottom-4 text-neutral-700 text-xs">v2.0.0 - Modular Architecture</div>
     </div>
 
+    <div id="create-char-screen" class="hidden h-screen w-full absolute z-50 bg-neutral-900 flex flex-col items-center justify-center p-8">
+        <h2 class="text-2xl font-bold text-white mb-6">CREATE FIGHTER</h2>
+        <div class="flex gap-4 mb-8">
+            <button id="style-Striker" onclick="game.selectStyle('Striker')" class="style-btn p-4 border border-neutral-700 rounded bg-neutral-800 text-neutral-400 w-24 hover:border-white">Striker</button>
+            <button id="style-Grappler" onclick="game.selectStyle('Grappler')" class="style-btn p-4 border border-neutral-700 rounded bg-neutral-800 text-neutral-400 w-24 hover:border-white">Grappler</button>
+            <button id="style-BJJ" onclick="game.selectStyle('BJJ')" class="style-btn p-4 border border-neutral-700 rounded bg-neutral-800 text-neutral-400 w-24 hover:border-white">BJJ</button>
+            <button id="style-Balanced" onclick="game.selectStyle('Balanced')" class="style-btn p-4 border border-neutral-700 rounded bg-neutral-800 text-neutral-400 w-24 hover:border-white">Balanced</button>
+        </div>
+        <div id="style-preview" class="text-red-500 font-mono text-sm mb-6 h-6"></div>
+        <input type="text" id="char-name" placeholder="Enter Name" class="bg-neutral-800 border border-neutral-700 p-3 text-white w-64 mb-4 text-center focus:outline-none focus:border-red-500">
+        <div class="flex gap-4">
+            <button onclick="game.cancelCreation()" class="text-neutral-500 hover:text-white text-sm">CANCEL</button>
+            <button onclick="game.confirmCharacter()" class="bg-red-600 hover:bg-red-700 text-white px-6 py-2 rounded font-bold">CONFIRM</button>
+        </div>
+    </div>
+
+    <div id="fight-offer-screen" class="hidden h-screen w-full absolute z-40 bg-neutral-900 flex flex-col p-8">
+        <h2 class="text-2xl font-bold text-white mb-6">SELECT OPPONENT</h2>
+        <div id="offer-container" class="grid grid-cols-1 gap-4 max-w-md mx-auto w-full"></div>
+    </div>
+
+    <div id="camp-screen" class="hidden h-screen w-full absolute z-40 bg-neutral-900 flex flex-col p-6 overflow-y-auto">
+        <header class="flex justify-between items-end mb-6 border-b border-neutral-800 pb-4">
+            <div>
+                <div class="text-xs text-neutral-500">PREPARING FOR</div>
+                <h2 class="text-2xl font-bold text-white" id="camp-opp-name">OPPONENT</h2>
+            </div>
+            <div class="text-right">
+                <div class="text-xs text-neutral-500">ENERGY</div>
+                <div class="text-3xl font-bold text-yellow-500" id="camp-energy">4</div>
+            </div>
+        </header>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl mx-auto w-full">
+            <div class="camp-section">
+                <div class="camp-header">Attributes</div>
+                <div class="grid grid-cols-2 gap-2">
+                    <button onclick="game.train('str')" class="train-btn"><span class="text-neutral-400 text-xs">STRIKING</span><span class="text-xl font-bold text-white" id="camp-str">0</span></button>
+                    <button onclick="game.train('grp')" class="train-btn"><span class="text-neutral-400 text-xs">GRAPPLING</span><span class="text-xl font-bold text-white" id="camp-grp">0</span></button>
+                    <button onclick="game.train('def')" class="train-btn"><span class="text-neutral-400 text-xs">DEFENSE</span><span class="text-xl font-bold text-white" id="camp-def">0</span></button>
+                    <button onclick="game.train('iq')" class="train-btn"><span class="text-neutral-400 text-xs">FIGHT IQ</span><span class="text-xl font-bold text-white" id="camp-iq">0</span></button>
+                </div>
+            </div>
+
+            <div class="space-y-4">
+                <div class="camp-section">
+                    <div class="camp-header">Strategy</div>
+                    <button onclick="game.scoutOpponent()" class="w-full p-3 bg-neutral-800 border border-neutral-700 mb-2 rounded text-left hover:border-blue-500">
+                        <div class="text-sm text-white font-bold">Scout Opponent</div>
+                        <div class="text-xs text-neutral-500" id="scout-result">Reveal stats</div>
+                    </button>
+                    <button onclick="game.coachTalk()" class="w-full p-3 bg-neutral-800 border border-neutral-700 rounded text-left hover:border-blue-500">
+                        <div class="text-sm text-white font-bold">Talk to Coach</div>
+                        <div class="text-xs text-neutral-500" id="coach-advice">Get advice (+IQ)</div>
+                    </button>
+                </div>
+
+                <div class="camp-section">
+                    <div class="camp-header">Move Shop</div>
+                    <div id="move-shop" class="h-32 overflow-y-auto pr-2"></div>
+                </div>
+            </div>
+        </div>
+        
+        <button id="btn-finish-camp" onclick="game.goToGamePlan()" class="mt-auto w-full max-w-md mx-auto bg-green-600 hover:bg-green-700 text-white font-bold py-4 rounded">FINISH CAMP</button>
+    </div>
+
+    <div id="game-plan-screen" class="hidden h-screen w-full absolute z-50 bg-neutral-900 flex flex-col items-center justify-center p-8">
+        <h2 class="text-2xl font-bold text-white mb-8">GAME PLAN</h2>
+        <div class="w-full max-w-md space-y-6">
+            <div>
+                <div class="text-xs text-neutral-500 mb-2 uppercase">Opening Stance</div>
+                <div class="flex gap-2">
+                    <button onclick="game.preSetStance('pressure')" class="flex-1 p-3 bg-neutral-800 border border-neutral-700 hover:border-red-500 rounded text-sm text-white">Pressure</button>
+                    <button onclick="game.preSetStance('balanced')" class="flex-1 p-3 bg-neutral-800 border border-neutral-700 hover:border-gray-400 rounded text-sm text-white">Balanced</button>
+                    <button onclick="game.preSetStance('evasive')" class="flex-1 p-3 bg-neutral-800 border border-neutral-700 hover:border-blue-500 rounded text-sm text-white">Evasive</button>
+                </div>
+            </div>
+            <div>
+                <div class="text-xs text-neutral-500 mb-2 uppercase">Defensive Focus</div>
+                <div class="flex gap-2">
+                    <button onclick="game.preSetDef('high')" class="flex-1 p-3 bg-neutral-800 border border-neutral-700 hover:border-red-500 rounded text-sm text-white">High</button>
+                    <button onclick="game.preSetDef('low')" class="flex-1 p-3 bg-neutral-800 border border-neutral-700 hover:border-orange-500 rounded text-sm text-white">Low</button>
+                    <button onclick="game.preSetDef('sprawl')" class="flex-1 p-3 bg-neutral-800 border border-neutral-700 hover:border-green-500 rounded text-sm text-white">Sprawl</button>
+                </div>
+            </div>
+            <button onclick="game.enterFight()" class="w-full bg-red-600 hover:bg-red-700 text-white font-bold py-4 rounded mt-8">ENTER FIGHT</button>
+        </div>
+    </div>
+
     <!-- CAREER SCREENS -->
     <div id="career-ui" class="hidden h-full w-full absolute z-40 bg-neutral-900 flex flex-col p-8 overflow-y-auto">
         <header class="mb-8 border-b border-neutral-800 pb-4 flex justify-between items-center">
