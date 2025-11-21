@@ -1,1 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TextMMA: Career</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="h-screen flex flex-col overflow-hidden bg-black">
 
+    <!-- START SCREEN -->
+    <div id="start-screen" class="h-screen w-full absolute z-50 bg-neutral-950 flex flex-col items-center justify-center">
+        <div class="mb-12 text-center animate-pulse">
+            <i class="fas fa-fist-raised text-6xl text-red-600 mb-4"></i>
+            <h1 class="text-6xl font-black tracking-tighter text-white">TEXT<span class="text-red-600">MMA</span></h1>
+            <p class="text-neutral-500 uppercase tracking-[0.5em] text-xs mt-2">Tactical Combat Simulator</p>
+        </div>
+        <div class="flex flex-col gap-4 w-72">
+            <button onclick="game.career.init()" class="menu-btn p-4 rounded group text-left">
+                <div class="text-xl font-bold text-white group-hover:text-red-500">CAREER MODE</div>
+                <div class="text-xs text-neutral-500 group-hover:text-neutral-300">Create a legacy.</div>
+            </button>
+            <button id="btn-load-career" onclick="game.career.load()" class="menu-btn p-4 rounded group text-left hidden">
+                <div class="text-xl font-bold text-white group-hover:text-green-500">CONTINUE</div>
+                <div class="text-xs text-neutral-500">Load previous save</div>
+            </button>
+            <button onclick="game.startQuickFight()" class="menu-btn p-4 rounded group text-left">
+                <div class="text-xl font-bold text-white group-hover:text-blue-500">QUICK FIGHT</div>
+                <div class="text-xs text-neutral-500 group-hover:text-neutral-300">Islam vs JDM</div>
+            </button>
+        </div>
+        <div class="absolute bottom-4 text-neutral-700 text-xs">v2.0.0 - Modular Architecture</div>
+    </div>
+
+    <!-- CAREER SCREENS -->
+    <div id="career-ui" class="hidden h-full w-full absolute z-40 bg-neutral-900 flex flex-col p-8 overflow-y-auto">
+        <header class="mb-8 border-b border-neutral-800 pb-4 flex justify-between items-center">
+            <h2 class="text-2xl font-bold text-white" id="career-title">CAREER HUB</h2>
+            <div class="flex gap-4 items-center">
+                 <button onclick="game.career.save()" class="text-xs text-gray-500 hover:text-white"><i class="fas fa-save mr-1"></i>SAVE</button>
+                 <div class="text-right text-xs font-mono text-neutral-400">
+                    <div id="car-record">Record: 0-0-0</div>
+                    <div id="car-money">Money: $0</div>
+                </div>
+            </div>
+        </header>
+        <div id="career-content" class="max-w-4xl mx-auto w-full"></div>
+    </div>
+
+    <!-- FIGHT UI -->
+    <div id="game-ui" class="hidden h-full flex flex-col">
+        <header class="bg-neutral-900 border-b border-neutral-800 p-4 flex flex-col gap-2 shrink-0">
+            <div class="flex justify-between items-center">
+                <div class="flex items-center gap-3">
+                    <i class="fas fa-trophy text-yellow-500 text-xl"></i>
+                    <div>
+                        <h1 class="font-bold text-xl tracking-tight leading-none">TEXT<span class="text-neutral-500">MMA</span></h1>
+                        <div class="text-[10px] text-neutral-500 uppercase tracking-widest" id="fight-title">Championship Bout</div>
+                    </div>
+                </div>
+                <div class="flex gap-4 text-sm font-mono">
+                    <div class="flex flex-col items-center"><span class="text-neutral-500 text-[10px]">ROUND</span><span id="round-display" class="font-bold text-xl">1</span></div>
+                    <div class="flex flex-col items-center w-20"><span class="text-neutral-500 text-[10px]">CLOCK</span><span id="clock-display" class="font-bold text-xl text-yellow-500">5:00</span></div>
+                </div>
+                <button onclick="game.returnToMenu()" class="px-3 py-1 bg-neutral-800 hover:bg-neutral-700 border border-neutral-600 text-xs rounded text-neutral-300">QUIT</button>
+            </div>
+            
+            <div class="bg-black rounded p-2 border border-neutral-800 relative mt-1">
+                <div class="flex justify-between text-[9px] text-neutral-500 uppercase font-mono mb-1">
+                    <span id="p1-name-meter">P1</span>
+                    <span id="range-text" class="text-yellow-500 font-bold">RANGE: 80</span>
+                    <span id="p2-name-meter">P2</span>
+                </div>
+                <div class="h-2 bg-neutral-800 rounded-full relative overflow-hidden">
+                    <div class="absolute top-0 bottom-0 w-full bg-neutral-900"></div> 
+                    <div class="absolute top-0 bottom-0 w-0.5 bg-neutral-700 left-1/2"></div>
+                    <div id="p1-marker" class="fighter-marker" style="left: 10%;"></div>
+                    <div id="p2-marker" class="fighter-marker" style="left: 90%;"></div>
+                </div>
+            </div>
+        </header>
+
+        <main class="flex-grow flex flex-col md:flex-row overflow-hidden">
+            <!-- P1 Panel -->
+            <div class="w-full md:w-1/3 bg-neutral-900 border-r border-neutral-800 flex flex-col p-4 overflow-y-auto" id="p1-panel">
+                <!-- P1 Stats Header -->
+                <div class="mb-2 flex justify-between items-end">
+                    <div><h2 class="text-red-500 font-bold text-2xl uppercase"><span id="p1-name">Player</span> <span class="text-yellow-500 text-sm align-middle ml-1" id="p1-rank"></span></h2><div class="text-xs text-neutral-400" id="p1-style">Style</div></div>
+                    <div class="text-right"><div class="text-xs text-neutral-500">STA</div><div class="font-mono text-red-400" id="p1-st-val">100%</div></div>
+                </div>
+                <!-- HP Bars -->
+                <div class="mb-4 space-y-1">
+                    <div class="flex items-center gap-2"><span class="part-label">HEAD</span><div class="hp-track"><div id="p1-hp-head" class="hp-fill bg-red-600" style="width: 100%"></div></div><span id="p1-val-head" class="hp-val">100</span></div>
+                    <div class="flex items-center gap-2"><span class="part-label">BODY</span><div class="hp-track"><div id="p1-hp-body" class="hp-fill bg-orange-500" style="width: 100%"></div></div><span id="p1-val-body" class="hp-val">100</span></div>
+                    <div class="flex items-center gap-2"><span class="part-label">LEGS</span><div class="hp-track"><div id="p1-hp-legs" class="hp-fill bg-blue-500" style="width: 100%"></div></div><span id="p1-val-legs" class="hp-val">100</span></div>
+                </div>
+                <div id="p1-status-badges" class="flex gap-2 mb-2 min-h-[20px]"></div>
+
+                <!-- Controls -->
+                <div id="fight-controls-container">
+                     <!-- Injected by Fight.js -->
+                </div>
+            </div>
+
+            <!-- Log -->
+            <div class="w-full md:w-1/3 bg-black flex flex-col border-x border-neutral-800">
+                <div class="p-2 border-b border-neutral-800 bg-neutral-900 text-[10px] text-neutral-500 uppercase flex justify-between"><span>Play-by-Play</span><span>LIVE</span></div>
+                <div id="game-log" class="flex-grow overflow-y-auto p-4 font-mono text-sm space-y-2"></div>
+            </div>
+
+            <!-- P2 Panel -->
+            <div class="w-full md:w-1/3 bg-neutral-900 flex flex-col p-4 overflow-y-auto" id="p2-panel">
+                 <div class="mb-2 flex justify-between items-end"><div class="text-left"><div class="text-xs text-neutral-500">STA</div><div class="font-mono text-blue-400" id="p2-st-val">100%</div></div><div class="text-right"><h2 class="text-blue-500 font-bold text-2xl uppercase"><span id="p2-name">Opponent</span> <span class="text-white text-sm align-middle ml-1" id="p2-rank"></span></h2><div class="text-xs text-neutral-400" id="p2-style">Style</div></div></div>
+                <!-- P2 HP -->
+                <div class="mb-4 space-y-1">
+                    <div class="flex items-center gap-2 justify-end"><span id="p2-val-head" class="hp-val">100</span><div class="hp-track"><div id="p2-hp-head" class="hp-fill bg-red-600" style="width: 100%"></div></div><span class="part-label text-right">HEAD</span></div>
+                    <div class="flex items-center gap-2 justify-end"><span id="p2-val-body" class="hp-val">100</span><div class="hp-track"><div id="p2-hp-body" class="hp-fill bg-orange-500" style="width: 100%"></div></div><span class="part-label text-right">BODY</span></div>
+                    <div class="flex items-center gap-2 justify-end"><span id="p2-val-legs" class="hp-val">100</span><div class="hp-track"><div id="p2-hp-legs" class="hp-fill bg-blue-500" style="width: 100%"></div></div><span class="part-label text-right">LEGS</span></div>
+                </div>
+                <div id="p2-status-badges" class="flex gap-2 mb-4 justify-end min-h-[20px]"></div>
+                <!-- AI Status -->
+                <div class="bg-neutral-800/50 rounded p-3 border border-neutral-800 mb-4">
+                    <div class="text-[10px] text-neutral-500 uppercase mb-2">Opponent Guard</div>
+                    <div class="grid grid-cols-3 gap-1 text-center"><div id="ai-def-high" class="def-indicator">HIGH</div><div id="ai-def-low" class="def-indicator">LOW</div><div id="ai-def-sprawl" class="def-indicator">SPRAWL</div></div>
+                </div>
+                <div class="mt-auto p-4 bg-neutral-950 rounded border border-neutral-800 text-center opacity-90"><div class="text-[10px] text-neutral-600 uppercase mb-1">Fight IQ Read</div><div class="text-blue-400 font-mono text-xs font-bold animate-pulse" id="ai-intention">ANALYZING OPPONENT...</div><div class="text-[9px] text-neutral-500 mt-1 italic" id="read-quality">Confidence: 0%</div></div>
+            </div>
+        </main>
+        
+        <footer class="bg-neutral-950 border-t border-neutral-800 p-2 shrink-0">
+            <div class="max-w-xl mx-auto mb-2 space-y-1" id="commentary-feed"></div>
+            <div id="round-bar-container" class="flex justify-center gap-2 w-full max-w-md mx-auto"></div>
+        </footer>
+    </div>
+
+    <!-- Load Scripts in Order -->
+    <script src="data.js"></script>
+    <script src="fighter.js"></script>
+    <script src="fight.js"></script>
+    <script src="career.js"></script>
+    <script src="main.js"></script>
+</body>
+</html>
